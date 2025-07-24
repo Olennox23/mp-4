@@ -3,6 +3,9 @@ import Link from "next/link";
 import { useState } from "react";
 import styled from 'styled-components';
 
+interface StyledLinkProps {
+    $active: boolean;
+}
 
 const StyledMain = styled.main`
     height: 100vh;
@@ -48,15 +51,18 @@ const StyledInput = styled.input`
         width: 20vw;
     }
 `
-const StyledLink = styled(Link)`
+const StyledLink = styled(Link)<StyledLinkProps>`
     border: 4px solid black;
     padding: 1vw;
     background-color: lightblue;
+    visibility: ${props => props.$active ? 'visible' : 'hidden'};
 `
+
 
 export default function Home() {
     const [movie, setMovie] = useState(""); // hold the value of the input of movie and year
     const [year, setYear] = useState("");
+    const isMovieValid = () => movie.trim().length > 0;
     return (
 
      <StyledMain>
@@ -81,8 +87,8 @@ export default function Home() {
                            />
                 </StyledDiv3>
             </StyledDiv2>
-            {/* create a dynamic link based on the users input */}
-            <StyledLink
+            {/* create a dynamic link based on the user's input */}
+            <StyledLink $active = {isMovieValid()}
                 href = {`/${movie}/${year}`}> Search for Movie
             </StyledLink>
             <p> ** Movie field is required, Year is optional</p> {/* user instruction */}
