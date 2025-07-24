@@ -1,29 +1,17 @@
-import Movie from "@/components/Movie";
-import getMovie from "@/lib/getMovie";
-import FailureCatch from "@/components/FailureCatch";
+import {Suspense}from "react";
 
-type PageProps = {
-    params: {
-        movie: string;
-        year: string;
-    };
-};
+import RetrieveMovies from "@/components/RetrieveMovies";
 
-export default async function ResultsPage(props: PageProps) {
-    const { movie, year } = props.params; // declare movie and year
-    const movieData = await getMovie(movie, year); //get the data
-    if (!movieData) return <FailureCatch/>; //return a failure message
-
-    const { title, plot, poster, imdbrating } = movieData;
-    if (!title) return <FailureCatch/>;
-
-    return (
-        <Movie
-            title={title}
-            year={year}
-            plot={plot}
-            poster={poster}
-            imdbrating={imdbrating}
-        />
-    );
+export default async function ResultsPage({params,}: {params: Promise<{movie: string, year:string}>}) {
+    const movie = decodeURIComponent((await params).movie)
+    const year = decodeURIComponent((await params).year);
+    return(
+        <Suspense
+            fallback={
+                <p> loading.... </p>
+            }
+        >
+            <RetrieveMovies movie = {movie} years = {year}/>
+        </Suspense>
+    )
 }
